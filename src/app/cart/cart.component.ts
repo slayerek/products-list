@@ -13,6 +13,7 @@ export class CartComponent implements OnInit {
     products = [];
     totalSum : number = 0;
     kodRabatowy: FormControl;
+    kodRabatowyAktywny : boolean = false;
     
     constructor(private cartProds : CartService) { }
 
@@ -25,8 +26,10 @@ export class CartComponent implements OnInit {
             
             if(kodRabatowyConfig.hasOwnProperty(kod)){
                 this.cartProds.kodRabatowyVal(kodRabatowyConfig[kod]);
+                this.kodRabatowyAktywny = true;
             }else{
                 this.cartProds.kodRabatowyVal(kod,false);
+                this.kodRabatowyAktywny = false;
             }
             
         });

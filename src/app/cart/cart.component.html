@@ -10,6 +10,7 @@
 
 <br />
 <input type="text" placeholder="Kod Rabatowy" [formControl]="kodRabatowy"  />
-
+<span *ngIf="kodRabatowyAktywny">Kod rabatowy aktywny</span>
+<span *ngIf="!kodRabatowyAktywny" style="color:red">Kod rabatowy nieaktywny</span>
 
 
