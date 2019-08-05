@@ -1,18 +1,41 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
+import { HttpClientModule, HttpClient } from "@angular/common/http";
+
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { ProductComponent } from './product/product.component';
+import { PaginationComponent } from './pagination/pagination.component';
+import { ProductListComponent } from './product-list/product-list.component';
+import { SearchComponent } from './search/search.component';
+import { SortComponent } from './sort/sort.component';
+import { CartComponent } from './cart/cart.component';
+
+import { ProductsService } from './products.service';
+import { SearchItemsService } from './search-items.service';
+import { CartService } from './cart.service';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ProductComponent,
+    PaginationComponent,
+    ProductListComponent,
+    SearchComponent,
+    SortComponent,
+    CartComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
-  providers: [],
+  providers: [ProductsService,SearchItemsService,CartService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

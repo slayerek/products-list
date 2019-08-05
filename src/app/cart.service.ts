@@ -1,0 +1,137 @@
+import { Injectable } from '@angular/core';
+
+import { BehaviorSubject } from 'rxjs';
+
+import * as Cookies from 'js-cookie';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class CartService {
+    
+    private cookie_name : string = 'product_list';
+    private kod_rabatowy : number = 0;
+    messageSource = new BehaviorSubject({ products : this.getItems() , totalSum : this.countTotalSum() });
+    
+    
+    constructor() { }
+    
+    addItemToCart(prod){
+        
+        let products = [];
+        let items = this.getItems();
+        prod.quantity = 1;
+        prod.sum_price = 0;
+        
+        if(items){
+            
+            const index = this.findIndex(prod);
+            
+            if( index > -1){
+                
+                const elem = items[index];
+                elem.quantity += 1;
+                elem.sum_price = elem.quantity * elem.price;
+                
+                items.splice(index,1,elem);
+                products = items;
+            }else{
+                products = items;
+                prod.sum_price = prod.price;
+                products.push( prod );
+            }
+            
+        }else{
+            prod.sum_price = prod.price;
+            products.push( prod );
+        }
+        
+        
+        this.saveItem(this.parseToString(products));
+        this.messageSource.next({ products : products, totalSum : this.countTotalSum()   });
+        
+    }
+    
+    countTotalSum(){
+        const items = this.getItems();
+        let totalSum = 0;
+        const kod_rabatowy = this.kod_rabatowy;
+        
+        for(let item of items){
+            totalSum += item.price * item.quantity;
+        }
+        
+        return kod_rabatowy ? totalSum - kod_rabatowy : totalSum;
+        
+    }
+    
+    findIndex(prod){
+        
+        const element = this.getItems().findIndex( (elem,ind,arr) => {
+            if( elem['name'] == prod['name'] ){
+                return true;
+            }else{
+                return false;
+            } 
+        });
+        
+        return element;
+        
+    }
+    
+    removeAll(id){
+        let items = this.getItems();
+        items.splice(id,1);
+        
+        this.saveItem(this.parseToString(items));
+        this.messageSource.next({ products : items , totalSum : this.countTotalSum()   });
+    }
+    
+    removeItem(id){
+        let items = this.getItems();
+        const elem = items[id];
+        
+        if(elem['quantity'] == 1){
+            items.splice(id,1);
+        }else{
+            elem['quantity'] -= 1;
+            elem['sum_price'] -= elem['price'];
+            items.splice(id,1,elem);
+        }
+        
+        this.saveItem(this.parseToString(items));
+        this.messageSource.next({ products : items , totalSum : this.countTotalSum()  });
+    }
+    
+    saveItem(products){
+        Cookies.set(this.cookie_name, products, {expires : 2});   
+    }
+    
+    getItems(){
+        if(Cookies.get(this.cookie_name) !== undefined){
+            return this.parseToObject(Cookies.get(this.cookie_name));
+        }
+        return false;
+    }
+    
+    parseToString(products){
+        return JSON.stringify(products);
+    }
+    
+    parseToObject(products){
+        return JSON.parse(products);
+    }
+    
+    kodRabatowyVal(val,kodTrue = true){
+        if(kodTrue){
+            this.kod_rabatowy = val;
+            this.messageSource.next({ products : this.getItems() , totalSum : this.countTotalSum()  });
+        }else{
+            this.kod_rabatowy = 0;
+            this.messageSource.next({ products : this.getItems() , totalSum : this.countTotalSum() });
+            
+        }
+        
+    }
+    
+}

@@ -3,7 +3,11 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+    production: false,
+    limitProductsPerPage : 3, //pagination
+    kodRabatowy : {
+        zzzz : 1000
+    }
 };
 
 /*
