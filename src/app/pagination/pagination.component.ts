@@ -1,9 +1,6 @@
 import {Component, OnInit,  Input, Output, EventEmitter } from '@angular/core';
-
 import { environment } from '../../environments/environment';
-
 import {ProductsService,Product} from '../products.service';
-
 import {Observable} from 'rxjs';
 
 @Component({
@@ -13,7 +10,7 @@ import {Observable} from 'rxjs';
 })
 export class PaginationComponent implements OnInit {
     
-    pagesToShowArr;
+    pagesToShowArr = [];
     activeIndex : number = 0;
     
     @Output() messageEvent = new EventEmitter<number>();

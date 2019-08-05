@@ -1,6 +1,5 @@
 <h4>Twój koszyk</h4>
 <ul class="user-cart--list">
-    
     <li *ngFor="let item of products">
         <button (click)="removeItem(item)">x</button>
         Name: {{item.name}} - Cena: {{item.sum_price}} - Ilość : {{item.quantity}}

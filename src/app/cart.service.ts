@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-
 import { BehaviorSubject } from 'rxjs';
-
+import { HelpFuncService } from './help-func.service';
 import * as Cookies from 'js-cookie';
 
 @Injectable({
@@ -14,7 +13,7 @@ export class CartService {
     messageSource = new BehaviorSubject({ products : this.getItems() , totalSum : this.countTotalSum() });
     
     
-    constructor() { }
+    constructor(private helpFunc : HelpFuncService) { }
     
     addItemToCart(prod){
         
@@ -47,7 +46,7 @@ export class CartService {
         }
         
         
-        this.saveItem(this.parseToString(products));
+        this.saveItem(this.helpFunc.parseToString(products));
         this.messageSource.next({ products : products, totalSum : this.countTotalSum()   });
         
     }
@@ -60,6 +59,8 @@ export class CartService {
         for(let item of items){
             totalSum += item.price * item.quantity;
         }
+        
+        if(totalSum==0) return 0;
         
         return kod_rabatowy ? totalSum - kod_rabatowy : totalSum;
         
@@ -83,7 +84,7 @@ export class CartService {
         let items = this.getItems();
         items.splice(id,1);
         
-        this.saveItem(this.parseToString(items));
+        this.saveItem(this.helpFunc.parseToString(items));
         this.messageSource.next({ products : items , totalSum : this.countTotalSum()   });
     }
     
@@ -99,7 +100,7 @@ export class CartService {
             items.splice(id,1,elem);
         }
         
-        this.saveItem(this.parseToString(items));
+        this.saveItem(this.helpFunc.parseToString(items));
         this.messageSource.next({ products : items , totalSum : this.countTotalSum()  });
     }
     
@@ -109,18 +110,12 @@ export class CartService {
     
     getItems(){
         if(Cookies.get(this.cookie_name) !== undefined){
-            return this.parseToObject(Cookies.get(this.cookie_name));
+            return this.helpFunc.parseToObject(Cookies.get(this.cookie_name));
         }
         return false;
     }
     
-    parseToString(products){
-        return JSON.stringify(products);
-    }
     
-    parseToObject(products){
-        return JSON.parse(products);
-    }
     
     kodRabatowyVal(val,kodTrue = true){
         if(kodTrue){

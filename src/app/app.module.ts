@@ -15,8 +15,8 @@ import { SortComponent } from './sort/sort.component';
 import { CartComponent } from './cart/cart.component';
 
 import { ProductsService } from './products.service';
-import { SearchItemsService } from './search-items.service';
 import { CartService } from './cart.service';
+import { HelpFuncService } from './help-func.service';
 
 @NgModule({
   declarations: [
@@ -35,7 +35,7 @@ import { CartService } from './cart.service';
     FormsModule,
     ReactiveFormsModule
   ],
-  providers: [ProductsService,SearchItemsService,CartService],
+  providers: [ProductsService,CartService,HelpFuncService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { SearchItemsService } from './search-items.service';
+import { HelpFuncService } from './help-func.service';
 
-describe('SearchItemsService', () => {
+describe('HelpFuncService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: SearchItemsService = TestBed.get(SearchItemsService);
+    const service: HelpFuncService = TestBed.get(HelpFuncService);
     expect(service).toBeTruthy();
   });
 });

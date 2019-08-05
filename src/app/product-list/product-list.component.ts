@@ -1,13 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-
 import { ProductsService, Product } from '../products.service';
-import { SearchItemsService } from '../search-items.service';
-
 import { SearchComponent } from '../search/search.component'; 
-
 import { environment } from '../../environments/environment';
-
-
 
 @Component({
   selector: 'app-product-list',
@@ -27,19 +21,25 @@ export class ProductListComponent implements OnInit {
     
     constructor(
         private products : ProductsService,
-        private foundProducts : SearchItemsService
     ) { }
     
-    receiveMessage($event) {
+    ngOnInit() {
+        this.products.getProducts().subscribe( res => {
+            this.allProducts = res;
+            this.updateProductList(res); 
+        });//first website load - add all products from API to product-list view
+    }
+    
+    receivePageInd($event) {
         this.pageInd = $event;
         this.updateProductList(this.allProducts);
     }//receive page index number from pagination component
     
     receiveSearchString($event){
-        const { foundItems , length } = this.foundProducts.getFoundItems(this.allProducts,$event);
+        const { foundItems , length } = this.getFoundItems(this.allProducts,$event);
         this.foundProds = foundItems;
         this.sortProducts(this.sortName,this.sortDir,foundItems);
-    }//retrieve founded products by search
+    }//retrieve found products by search
     
     receiveSortValues(sortObj){
         this.sortName = sortObj.sortName;
@@ -47,15 +47,6 @@ export class ProductListComponent implements OnInit {
         this.sortProducts(sortObj.sortName,sortObj.direction,this.foundProds !== undefined ? this.foundProds : this.allProducts );
     }//rertieve sort values
 
-    ngOnInit() {
-        
-        this.products.getProducts().subscribe( res => {
-            this.allProducts = res;
-            this.updateProductList(res); 
-        });//first website load - add all products from API to product-list view
-        
-    }
-    
     sortProducts(sortName='id',sortDir='asc',arr=[]){
         
         let sortProducts = arr;
@@ -65,10 +56,8 @@ export class ProductListComponent implements OnInit {
                 const elemA = a[sortName];
                 const elemB = b[sortName];
                 
-                if(sortName=='name'){
-                    return elemA.localeCompare(elemB);
-                }
-            
+                if(sortName=='name') return elemA.localeCompare(elemB);
+                 
                 return elemA - elemB; 
             });
         }else if(sortDir=='dsc'){
@@ -76,9 +65,7 @@ export class ProductListComponent implements OnInit {
                 const elemA = a[sortName];
                 const elemB = b[sortName];
                 
-                if(sortName=='name'){
-                    return elemB.localeCompare(elemA);
-                }
+                if(sortName=='name') return elemB.localeCompare(elemA);
                 
                 return elemB - elemA; 
             });
@@ -109,7 +96,22 @@ export class ProductListComponent implements OnInit {
         
     }//update list of products in product list view
     
-    
+    getFoundItems(array,searchingString){
+
+        let searchItems = [];
+        let length; 
+
+        for(let item of array){
+            if( item.name.search(new RegExp(searchingString, "i")) > -1 ){
+                searchItems.push(item);
+            }
+        }
+
+        length = searchItems.length
+
+        return { foundItems : searchItems , length : length };
+
+    }//return found items in array
     
     
 }

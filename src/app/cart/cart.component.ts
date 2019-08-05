@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-
 import { ReactiveFormsModule, FormControl, FormsModule } from "@angular/forms";
-
 import { CartService } from '../cart.service';
-
 import { environment } from '../../environments/environment';
 
 @Component({
